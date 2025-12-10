@@ -1,84 +1,202 @@
-(() => {
-vid.autoplay = true;
-vid.muted = true;
-vid.playsInline = true;
-vid.className = 'video-fly';
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ごはんクリックゲーム</title>
+  <style>
+    body { font-family: sans-serif; text-align:center; background:#f1f5f9; margin:0; }
+    #gameArea { position: relative; width:100%; height:60vh; background:#fff; overflow:hidden; margin-top:20px; }
+    .floatingVideo {
+      position:absolute;
+      left:50%; transform:translateX(-50%);
+      width:200px; pointer-events:none;
+    }
+    button {
+      padding:12px 30px; margin:10px;
+      font-size:18px; border-radius:8px; border:none;
+      background:#4f46e5; color:white;
+    }
+    #rankingList { text-align:left; width:260px; margin:0 auto; }
+  </style>
+</head>
+<body>
 
+<h1 id="title">ごはんゲーム</h1>
 
-// 再生速度はクリック回数に応じて上げる（上限を設ける）
-const rate = Math.min(4, 1 + clicks * 0.03);
-vid.playbackRate = rate;
+<!-- ホーム画面 -->
+<div id="home">
+  <button onclick="startGame()">スタート</button>
+  <button onclick="showRanking()">ランキング</button>
+</div>
 
+<!-- ゲーム画面 -->
+<div id="game" style="display:none;">
+  <div>スコア：<span id="score">0</span></div>
+  <div id="timer">30</div>
+  <div id="gameArea">画面をクリック！</div>
+</div>
 
-// ランダムに左右の微調整（同じ場所に出る指定なら中央でOK）
-const jitter = (Math.random() - 0.5) * 120; // -60..60px
-vid.style.left = `calc(50% + ${jitter}px)`;
+<!-- 結果画面 -->
+<div id="result" style="display:none;">
+  <h2>最終スコア：<span id="finalScore"></span></h2>
+  <input id="playerName" placeholder="名前" style="padding:10px;font-size:16px;">
+  <br>
+  <button onclick="registerScore()">ランキングに登録</button>
+</div>
 
+<!-- ランキング画面 -->
+<div id="ranking" style="display:none;">
+  <h2>ランキングTOP10</h2>
+  <div id="rankingList"></div>
+  <button onclick="goHome()">ホームに戻る</button>
+</div>
 
-playArea.appendChild(vid);
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
+  // ⚠ ここはあなたの Firebase の設定に書き換えてください
+  const firebaseConfig = {
+    apiKey: "YOUR-API-KEY",
+    authDomain: "xxxx.firebaseapp.com",
+    databaseURL: "https://xxxx-default-rtdb.firebaseio.com",
+    projectId: "xxxx",
+    storageBucket: "xxxx.appspot.com",
+    messagingSenderId: "xxxx",
+    appId: "xxxx"
+  };
 
-// 2.5秒後に要素削除（動画より少し余裕）
-setTimeout(()=>{
-try{ vid.remove(); }catch(e){}
-}, 2500);
-}
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
+  let score = 0;
+  let timeLeft = 30;
+  let timerID;
 
-// スタートは画面タップで開始（ホームから来たとき）
-// index.html の「スタート」リンクから来る想定なので、ページ読み込み時に自動開始
-window.addEventListener('load', ()=>{
-startGame();
-});
+  // ホーム → ゲーム開始
+  window.startGame = function(){
+    score = 0;
+    timeLeft = 30;
+    document.getElementById("score").textContent = score;
 
+    show("home", false);
+    show("ranking", false);
+    show("result", false);
+    show("game", true);
 
-// クリック / タップを受け付ける
-playArea.addEventListener('pointerdown', onAreaClick);
+    timerID = setInterval(() => {
+      timeLeft--;
+      document.getElementById("timer").textContent = timeLeft;
+      if(timeLeft <= 0) endGame();
+    }, 1000);
+  }
 
+  // ゲーム終了 → 結果画面
+  function endGame(){
+    clearInterval(timerID);
+    show("game", false);
+    document.getElementById("finalScore").textContent = score;
+    show("result", true);
+  }
 
-// 登録ボタン
-registerBtn.addEventListener('click', async ()=>{
-const name = (nameInput.value || '').trim();
-if(!name){ regMsg.textContent = '名前を入力してください'; return; }
+  // ランキングに登録
+  window.registerScore = function(){
+    const name = document.getElementById("playerName").value.trim();
+    if(!name) return alert("名前を入れてね");
 
+    const rankRef = ref(db, "ranking");
 
-regMsg.textContent = '登録中…';
-try{
-// ドキュメントを追加
-const now = Date.now();
-await db.collection('scores').add({ name, score: Number(score), timestamp: now });
+    // まず今のランキングを取得して重複除去
+    onValue(rankRef, (snapshot) => {
+      let data = snapshot.val() || {};
+      for (let key in data) {
+        if(data[key].name === name && data[key].score === score){
+          // 既に同じものがある → 消す
+          set(ref(db, "ranking/" + key), null);
+        }
+      }
 
+      // 再度登録
+      push(rankRef, {
+        name: name,
+        score: score
+      });
 
-// 同じ名前かつ同じスコアのものを複数残さない。最新の1つだけを残す。
-const q = await db.collection('scores')
-.where('name','==',name)
-.where('score','==',Number(score))
-.orderBy('timestamp','desc')
-.get();
+      goHome();
+    }, { onlyOnce:true });
+  }
 
+  // ランキング表示
+  window.showRanking = function(){
+    const rankRef = ref(db, "ranking");
 
-if(!q.empty){
-// 最初の1件を残して、それ以外を削除
-let keepId = q.docs[0].id;
-const batch = db.batch();
-for(let i=1;i<q.docs.length;i++){
-batch.delete(q.docs[i].ref);
-}
-await batch.commit();
-}
+    onValue(rankRef, (snapshot) => {
+      let list = snapshot.val() || {};
+      let arr = Object.values(list);
 
+      // スコア順にソート
+      arr.sort((a,b)=>b.score - a.score);
 
-regMsg.textContent = '登録しました！ホームへ戻ります';
-setTimeout(()=>{ location.href = 'index.html'; }, 800);
-}catch(err){
-console.error(err);
-regMsg.textContent = 'エラーが発生しました。コンソールを確認してください。';
-}
-});
+      // 10位まで
+      arr = arr.slice(0,10);
 
+      let html = "";
+      arr.forEach((r,i)=>{
+        html += (i+1)+". "+r.name+" - "+r.score+"<br>";
+      });
+      document.getElementById("rankingList").innerHTML = html;
+    });
 
-backBtn.addEventListener('click', ()=>{ location.href = 'index.html'; });
-homeBtn.addEventListener('click', ()=>{ location.href = 'index.html'; });
+    show("home", false);
+    show("result", false);
+    show("game", false);
+    show("ranking", true);
+  }
 
+  // クリックで動画出現
+  document.getElementById("gameArea").addEventListener("click", () => {
+    if(timeLeft <= 0) return;
 
-})();
+    score += 10;
+    document.getElementById("score").textContent = score;
+
+    spawnVideo();
+  });
+
+  function spawnVideo(){
+    const video = document.createElement("video");
+    video.src = "https://github.com/kikiyume280/zzgohan/raw/main/food.mp4";
+    video.autoplay = true;
+    video.className = "floatingVideo";
+
+    document.getElementById("gameArea").appendChild(video);
+
+    // 上に浮かびながら消える
+    let y = 200;
+    const anim = setInterval(()=>{
+      y -= 4;
+      video.style.top = y + "px";
+      if(y < -200){
+        clearInterval(anim);
+        video.remove();
+      }
+    }, 16);
+  }
+
+  // 汎用表示切替
+  function show(id, bool){
+    document.getElementById(id).style.display = bool ? "block" : "none";
+  }
+
+  window.goHome = function(){
+    show("result", false);
+    show("ranking", false);
+    show("game", false);
+    show("home", true);
+  }
+</script>
+
+</body>
+</html>
