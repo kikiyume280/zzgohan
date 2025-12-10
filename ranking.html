@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><title>ランキング</title></head>
+<body>
+<h2>ランキング TOP10</h2>
+<div id="list"></div>
+<button onclick="location.href='index.html'">戻る</button>
+<script type="module">
+import { db } from "./script/firebase.js";
+import { collection, getDocs } 
+  from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+async function loadRank(){
+  const snap = await getDocs(collection(db,"ranking"));
+  let data=[];
+  snap.forEach(d=>data.push(d.data()));
+  data = data.filter((v,i,a)=>a.findIndex(t=>t.name===v.name&&t.score===v.score)===i);
+  data.sort((a,b)=>b.score-a.score);
+  document.getElementById("list").innerHTML =
+    data.slice(0,10).map((v,i)=>`${i+1}位：${v.name} - ${v.score}`).join("<br>");
+}
+loadRank();
+</script>
+</body></html>
