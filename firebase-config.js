@@ -1,16 +1,6 @@
 /*
 IMPORTANT: ここに Firebase コンソールで作成した Web アプリの設定を貼ってください。
-例：
-const firebaseConfig = {
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_PROJECT.firebaseapp.com",
-projectId: "YOUR_PROJECT",
-storageBucket: "YOUR_PROJECT.appspot.com",
-messagingSenderId: "...",
-appId: "1:...:web:..."
-};
 */
-
 
 const firebaseConfig = {
   apiKey: "AIzaSyCC7KAv7V4j1Z6-o1Y8ikmb3r5htN9O_aA",
@@ -22,12 +12,10 @@ const firebaseConfig = {
   measurementId: "G-JX4RP9LWR3"
 };
 
-
 // compat SDK を使って簡単に（上で読み込んでいます）
-if(!firebase.apps.length){
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
 }
+
 const db = firebase.firestore();
 
-
----
