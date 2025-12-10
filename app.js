@@ -1,10 +1,4 @@
 // app.js - ゲームロジック
-// ランダムに左右の微調整（同じ場所に出る指定なら中央でOK）
-const jitter = (Math.random() - 0.5) * 120; // -60..60px
-vid.style.left = `calc(50% + ${jitter}px)`;
-
-
-playArea.appendChild(vid);
 
 
 // 2.5秒後に要素削除（動画より少し余裕）
@@ -71,6 +65,3 @@ homeBtn.addEventListener('click', ()=>{ location.href = 'index.html'; });
 
 
 })();
-
-
-
