@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>クリックでごはんゲーム</title>
+<style>
+ body{margin:0;font-family:sans-serif;background:#f5f5f5;text-align:center;}
+ .screen{display:none;padding-top:40px;}
+ .active{display:block;}
+ button{padding:12px 24px;font-size:20px;border:none;border-radius:10px;background:#ff7f7f;color:#fff;cursor:pointer;margin:10px;}
+ #videoArea{position:relative;width:320px;height:320px;margin:0 auto;background:#ddd;overflow:hidden;border-radius:12px;}
+ .feedVideo{position:absolute;width:100%;height:auto;pointer-events:none;}
+ #scoreText{font-size:24px;margin:10px;}
+ #rankList{margin-top:20px;font-size:20px;}
+</style>
+</head>
+<body>
+
+<!-- ホーム画面 -->
+<div id="home" class="screen active">
+  <h1>ごはんゲーム</h1>
+  <button onclick="goStart()">スタート</button>
+  <button onclick="goRank()">ランキング</button>
+</div>
+
+<!-- ゲーム画面 -->
+<div id="game" class="screen">
+  <h2>画面をクリック！</h2>
+  <div id="scoreText">スコア：0</div>
+  <div id="videoArea" onclick="clickFeed()"></div>
+  <div id="timerText" style="font-size:22px;margin-top:10px;">30</div>
+</div>
+
+<!-- 結果画面 -->
+<div id="result" class="screen">
+  <h2>結果</h2>
+  <div id="finalScore" style="font-size:26px;margin:10px;"></div>
+  <input id="playerName" placeholder="名前" style="padding:8px;font-size:18px;" />
+  <br>
+  <button onclick="saveRank()">登録</button>
+  <button onclick="goHome()">ホームへ</button>
+</div>
+
+<!-- ランキング画面 -->
+<div id="ranking" class="screen">
+  <h2>ランキング(上位10名)</h2>
+  <div id="rankList"></div>
+  <button onclick="goHome()">ホーム</button>
+</div>
+
+<script>
+let score = 0;
+let timeLeft = 30;
+let timer;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goStart(){
+  score = 0;
+  timeLeft = 30;
+  document.getElementById('scoreText').textContent = 'スコア：0';
+  document.getElementById('timerText').textContent = 30;
+  showScreen('game');
+  timer = setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timerText').textContent = timeLeft;
+    if(timeLeft <= 0){ endGame(); }
+  },1000);
+}
+
+function clickFeed(){
+  if(timeLeft <= 0) return;
+  score += 10;
+  document.getElementById('scoreText').textContent = 'スコア：'+score;
+
+  // 簡易的に画像を上に流す（透明背景動画の代わり）
+  const v = document.createElement('img');
+  v.src = 'https://dummyimage.com/200x200/ffffff/000000.png&text=feed';
+  v.className = 'feedVideo';
+  v.style.bottom = '-50px';
+  document.getElementById('videoArea').appendChild(v);
+
+  let pos = -50;
+  const anim = setInterval(()=>{
+    pos += 5;
+    v.style.bottom = pos + 'px';
+    if(pos > 350){
+      clearInterval(anim);
+      v.remove();
+    }
+  },30);
+}
+
+function endGame(){
+  clearInterval(timer);
+  document.getElementById('finalScore').textContent = '最終スコア：'+score;
+  showScreen('result');
+}
+
+function saveRank(){
+  const name = document.getElementById('playerName').value || '名無し';
+  const data = JSON.parse(localStorage.getItem('rank') || '[]');
+  data.push({name, score});
+  data.sort((a,b)=>b.score-a.score);
+  const top10 = data.slice(0,10);
+  localStorage.setItem('rank', JSON.stringify(top10));
+  goRank();
+}
+
+function goRank(){
+  const list = JSON.parse(localStorage.getItem('rank') || '[]');
+  const box = document.getElementById('rankList');
+  box.innerHTML = '';
+  list.forEach((r,i)=>{
+    box.innerHTML += `${i+1}位：${r.name} - ${r.score}<br>`;
+  });
+  showScreen('ranking');
+}
+
+function goHome(){ showScreen('home'); }
+</script>
+
+</body>
+</html>
