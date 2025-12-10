@@ -1,77 +1,84 @@
-// app.js - ゲームロジック
-(function(){
+(() => {
+vid.autoplay = true;
+vid.muted = true;
+vid.playsInline = true;
+vid.className = 'video-fly';
 
-// ★ GitHub 動画 URL を使う spawnVideo() を追加（あなたのコードを壊さず追加）
-function spawnVideo() {
-    const vid = document.createElement("video");
-    vid.src = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.mp4";
-    vid.autoplay = true;
-    vid.muted = true;
-    vid.playsInline = true;
-    vid.className = "floating-video";
 
-    // ランダム位置同じ
-    const jitter = (Math.random() - 0.5) * 120;
-    vid.style.left = `calc(50% + ${jitter}px)`;
+// 再生速度はクリック回数に応じて上げる（上限を設ける）
+const rate = Math.min(4, 1 + clicks * 0.03);
+vid.playbackRate = rate;
 
-    playArea.appendChild(vid);
 
-    // 2.5秒後に要素削除
-    setTimeout(()=>{
-        try{ vid.remove(); }catch(e){}
-    }, 2500);
+// ランダムに左右の微調整（同じ場所に出る指定なら中央でOK）
+const jitter = (Math.random() - 0.5) * 120; // -60..60px
+vid.style.left = `calc(50% + ${jitter}px)`;
+
+
+playArea.appendChild(vid);
+
+
+// 2.5秒後に要素削除（動画より少し余裕）
+setTimeout(()=>{
+try{ vid.remove(); }catch(e){}
+}, 2500);
 }
 
 
-// --- ここからあなたの元のコード（修正なし） ---
-
 // スタートは画面タップで開始（ホームから来たとき）
+// index.html の「スタート」リンクから来る想定なので、ページ読み込み時に自動開始
 window.addEventListener('load', ()=>{
-    startGame();
+startGame();
 });
+
 
 // クリック / タップを受け付ける
 playArea.addEventListener('pointerdown', onAreaClick);
 
+
 // 登録ボタン
 registerBtn.addEventListener('click', async ()=>{
-    const name = (nameInput.value || '').trim();
-    if(!name){ 
-        regMsg.textContent = '名前を入力してください'; 
-        return; 
-    }
+const name = (nameInput.value || '').trim();
+if(!name){ regMsg.textContent = '名前を入力してください'; return; }
 
-    regMsg.textContent = '登録中…';
 
-    try{
-        const now = Date.now();
-        await db.collection('scores').add({ name, score: Number(score), timestamp: now });
+regMsg.textContent = '登録中…';
+try{
+// ドキュメントを追加
+const now = Date.now();
+await db.collection('scores').add({ name, score: Number(score), timestamp: now });
 
-        const q = await db.collection('scores')
-            .where('name','==',name)
-            .where('score','==',Number(score))
-            .orderBy('timestamp','desc')
-            .get();
 
-        if(!q.empty){
-            let keepId = q.docs[0].id;
-            const batch = db.batch();
-            for(let i=1;i<q.docs.length;i++){
-                batch.delete(q.docs[i].ref);
-            }
-            await batch.commit();
-        }
+// 同じ名前かつ同じスコアのものを複数残さない。最新の1つだけを残す。
+const q = await db.collection('scores')
+.where('name','==',name)
+.where('score','==',Number(score))
+.orderBy('timestamp','desc')
+.get();
 
-        regMsg.textContent = '登録しました！ホームへ戻ります';
-        setTimeout(()=>{ location.href = 'index.html'; }, 800);
 
-    }catch(err){
-        console.error(err);
-        regMsg.textContent = 'エラーが発生しました。コンソールを確認してください。';
-    }
+if(!q.empty){
+// 最初の1件を残して、それ以外を削除
+let keepId = q.docs[0].id;
+const batch = db.batch();
+for(let i=1;i<q.docs.length;i++){
+batch.delete(q.docs[i].ref);
+}
+await batch.commit();
+}
+
+
+regMsg.textContent = '登録しました！ホームへ戻ります';
+setTimeout(()=>{ location.href = 'index.html'; }, 800);
+}catch(err){
+console.error(err);
+regMsg.textContent = 'エラーが発生しました。コンソールを確認してください。';
+}
 });
+
 
 backBtn.addEventListener('click', ()=>{ location.href = 'index.html'; });
 homeBtn.addEventListener('click', ()=>{ location.href = 'index.html'; });
 
-})(); // ★ IIFE を正しく閉じる
+
+})();
