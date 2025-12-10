@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>結果</title>
+<style>
+  body { text-align:center; }
+</style>
+</head>
+
+<body>
+<h2>結果発表</h2>
+<div id="score"></div>
+
+<input id="name" placeholder="名前を入力" />
+<button id="regBtn">登録する</button>
+
+<script type="module">
+import { db } from "./script/firebase.js";
+import { collection, addDoc, getDocs } 
+ from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+const score = localStorage.getItem("finalScore");
+document.getElementById("score").textContent = `スコア：${score}`;
+
+document.getElementById("regBtn").onclick = async () => {
+  const name = document.getElementById("name").value;
+  if (!name) return;
+
+  await addDoc(collection(db, "ranking"), {
+    name: name,
+    score: Number(score)
+  });
+
+  window.location.href = "index.html";
+};
+</script>
+</body>
+</html>
