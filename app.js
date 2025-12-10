@@ -58,15 +58,15 @@
   import { getDatabase, ref, push, onValue, set } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
   // ⚠ ここはあなたの Firebase の設定に書き換えてください
-  const firebaseConfig = {
-    apiKey: "YOUR-API-KEY",
-    authDomain: "xxxx.firebaseapp.com",
-    databaseURL: "https://xxxx-default-rtdb.firebaseio.com",
-    projectId: "xxxx",
-    storageBucket: "xxxx.appspot.com",
-    messagingSenderId: "xxxx",
-    appId: "xxxx"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCC7KAv7V4j1Z6-o1Y8ikmb3r5htN9O_aA",
+  authDomain: "zzgohan-280.firebaseapp.com",
+  projectId: "zzgohan-280",
+  storageBucket: "zzgohan-280.firebasestorage.app",
+  messagingSenderId: "459336048542",
+  appId: "1:459336048542:web:ff6c825dec81cc7df8008f",
+  measurementId: "G-JX4RP9LWR3"
+};
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
