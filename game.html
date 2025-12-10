@@ -9,8 +9,7 @@
     position:absolute;
     width:100%;
     height:100%;
-    display:block;   /* display:none を削除 */
-    background:#000; /* 読み込み中もわかりやすく */
+    display:block;
   }
   #score { font-size:28px; margin-top:20px; }
 </style>
@@ -21,14 +20,14 @@
 
 <div id="videoArea">
   <video id="feedVideo"
-         src="https://raw.githubusercontent.com/kikiyume280/zzgohan/main/feed.mp4"
-         controls
-         playsinline></video>
+         src="./feed.mp4"
+         playsinline
+         muted></video>
 </div>
 
 <div id="score">スコア：0</div>
 
-<script type="module" src="script/game.js"></script>
+<script type="module" src="./game.js"></script>
 
 </body>
 </html>
