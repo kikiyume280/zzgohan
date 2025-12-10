@@ -1,33 +1,45 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8"><title>ゲーム</title>
-<style>
-  body { background:#f0f0f0; text-align:center; }
-  #videoArea { position:relative; width:320px; height:320px; margin:40px auto; }
-  video {
-    position:absolute;
-    width:100%;
-    height:100%;
-    display:block;
-  }
-  #score { font-size:28px; margin-top:20px; }
-</style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Food Clicker - Game</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<main class="game-container">
+<header class="game-header">
+<button id="homeBtn" class="small">ホームへ</button>
+<div class="score-area">スコア：<span id="score">0</span></div>
+<div id="timer">30.0</div>
+</header>
 
-<h2>画面をクリック！</h2>
 
-<div id="videoArea">
-  <video id="feedVideo"
-         src="./feed.mp4"
-         playsinline
-         muted></video>
+<div id="play-area" class="play-area">
+<div id="clickHint" class="click-hint">画面をクリック！</div>
+<!-- 動画要素はここに動的に追加 -->
 </div>
 
-<div id="score">スコア：0</div>
 
-<script type="module" src="./game.js"></script>
+<div id="endPanel" class="end-panel hidden">
+<h2>終了！</h2>
+<p>最終スコア：<strong id="finalScore">0</strong></p>
+<label>名前： <input id="nameInput" maxlength="20" placeholder="名前を入れてね"></label>
+<div class="end-buttons">
+<button id="registerBtn" class="btn">登録</button>
+<button id="backBtn" class="btn secondary">ホームに戻る</button>
+</div>
+<p id="regMsg" class="note"></p>
+</div>
 
+
+</main>
+
+
+<!-- Firebase とアプリのスクリプト -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
