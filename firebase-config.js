@@ -1,6 +1,4 @@
-/*
-IMPORTANT: ここに Firebase コンソールで作成した Web アプリの設定を貼ってください。
-*/
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyCC7KAv7V4j1Z6-o1Y8ikmb3r5htN9O_aA",
