@@ -169,26 +169,26 @@ const firebaseConfig = {
 function spawnVideo(){
   const img = document.createElement("img");
 
-  // ⭐ GIF を毎回確実に最初から再生するテクニック
+  // 毎回確実に最初から再生
   img.src = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif?" + Date.now();
 
   img.className = "floatingVideo";
 
-  // ⭐ 位置を固定（中央）
+  // 位置を固定（中央）
   img.style.top = "50%";
   img.style.left = "50%";
   img.style.transform = "translate(-50%, -50%)";
 
-  // ⭐ 大きさを調整
-  img.style.width = "260px";   // ← 好きな大きさに変更OK
+  // サイズ大きめ
+  img.style.width = "260px";
   img.style.height = "auto";
 
   document.getElementById("gameArea").appendChild(img);
 
-  // ⭐ GIF 再生終了を疑似的に 1秒後に消す（GIFの長さに合わせる）
+  // ⭐ GIF の表示時間を完全にコントロール（例：600ms）
   setTimeout(() => {
     img.remove();
-  }, 1000); // ← GIF の長さに合わせて変更
+  }, 600); // ← ここをGIFより少し長めにすれば「最後のコマで固まる問題」消滅！
 }
 
 
