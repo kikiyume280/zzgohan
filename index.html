@@ -309,7 +309,10 @@ const _oldShow = window.show;
 window.show = function(id, bool){
   _oldShow(id, bool);
 
-  const homeVisible = document.getElementById("home").style.display !== "none";
+ // ▼ ホームが実際に表示されているかどうかを正確に判定
+const homeVisible =
+  window.getComputedStyle(document.getElementById("home")).display !== "none";
+
 
   // ★ ホーム時のみ説明文と音量設定を表示
   document.body.classList.toggle("home-active", homeVisible);
