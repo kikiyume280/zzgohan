@@ -305,6 +305,19 @@ window.addEventListener("DOMContentLoaded", () => {
     bgm.volume = e.target.value;
   });
 });
+
+// ★ 最初のユーザー操作で BGM を許可
+window.addEventListener("click", () => {
+  if(bgm.paused){
+    bgm.play().catch(()=>{});
+  }
+}, { once:true });
+
+
+
+
+
+  
 </script>
 
 
