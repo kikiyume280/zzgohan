@@ -19,6 +19,21 @@
     }
     #rankingList { text-align:left; width:260px; margin:0 auto; }
 
+
+    /* ★ 背景動画（全画面） */
+#bgVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1; /* ← 背面に配置 */
+  opacity: 0.35; /* ← 明るすぎるなら調整可能 */
+  pointer-events: none; /* ← 動画がクリックを邪魔しない */
+}
+
+
 /* ★ ホームのときだけ howto を表示する */
 #howto {
   display: block;
@@ -32,6 +47,13 @@ body:not(.home-active) #soundSettings {
   </style>
 </head>
 <body>
+
+<!-- ★ 背景動画（ループ再生） -->
+<video id="bgVideo" autoplay loop muted playsinline>
+  <source src="https://raw.githubusercontent.com/kikiyume280/zzgohan/main/Movie.mp4" type="video/mp4">
+</video>
+
+  
 
 <h1 id="title">ユメ餌付け大作戦!!a</h1>
 
