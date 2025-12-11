@@ -19,7 +19,6 @@
     }
     #rankingList { text-align:left; width:260px; margin:0 auto; }
 
-
 /* ★ ホームのときだけ howto を表示する */
 #howto {
   display: block;
@@ -30,9 +29,6 @@ body:not(.home-active) #howto,
 body:not(.home-active) #soundSettings {
   display: none;
 }
-
-
-    
   </style>
 </head>
 <body>
@@ -44,8 +40,6 @@ body:not(.home-active) #soundSettings {
   <button onclick="startGame()">スタート</button>
   <button onclick="showRanking()">ランキング一覧</button>
 </div>
-
-
 
   <div id="howto" style="margin-top:20px; font-size:16px; line-height:1.6;">
   <h3>【遊び方】</h3>
@@ -250,8 +244,6 @@ function spawnVideo(){
   }, isRare ? 700 : 600);
 }
 
-
-
   // 汎用表示切替
 // もともとの show を window に登録
 window.show = function(id, bool){
@@ -265,8 +257,6 @@ window.show = function(id, bool){
     show("home", true);
   }
 </script>
-
-
 
 <!-- ★ ホーム限定BGM + 音量設定 ★ -->
 <script>
@@ -333,9 +323,6 @@ window.show = function(id, bool){
   }
 };
 
-
-
-
 // ★ 音量スライダーUIをページ下に追加
 window.addEventListener("DOMContentLoaded", () => {
   const box = document.createElement("div");
@@ -360,19 +347,6 @@ window.addEventListener("click", () => {
   }
 }, { once:true });
 
-
-
-
-
-  
 </script>
-
-
-
-
-
-
-
-  
 </body>
 </html>
