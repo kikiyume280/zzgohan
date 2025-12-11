@@ -308,9 +308,8 @@ document.getElementById("seVolume").addEventListener("input", e=>{
 
   
 function playClickSound(){
-  let se = new Audio(clickSoundURL);
-  se.volume = bgm.volume; // ★ 音量連動
-  se.play();
+  clickSound.currentTime = 0;
+  clickSound.play().catch(()=>{});
 }
 
 const _oldShow = window.show;
