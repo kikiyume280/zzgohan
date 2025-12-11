@@ -179,7 +179,8 @@ document.getElementById("gameArea").addEventListener("click", () => {
   if(timeLeft <= 0) return;
 
   // ★クリック音
-  new Audio("https://raw.githubusercontent.com/kikiyume280/zzgohan/main/pon.mp3").play();
+playClickSound();
+
 
   score += 10;
   document.getElementById("score").textContent = score;
@@ -245,10 +246,9 @@ function spawnVideo(){
 
 <!-- ★ ホーム限定BGM + 音量設定 ★ -->
 <script>
-let bgm = playClickSound();
-
-bgm.loop = true;   // ループ再生
-bgm.volume = 0.5;  // 初期音量（0〜1）
+let bgm = new Audio("https://raw.githubusercontent.com/kikiyume280/zzgohan/main/vinly.mp3");
+bgm.loop = true;
+bgm.volume = 0.5;
 
 // クリック音を音量可変にするため保存
 let clickSoundURL = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/pon.mp3";
