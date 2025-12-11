@@ -166,24 +166,31 @@ const firebaseConfig = {
     spawnVideo();
   });
 
- function spawnVideo(){
+function spawnVideo(){
   const img = document.createElement("img");
-  img.src = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif";
+
+  // ⭐ GIF を毎回確実に最初から再生するテクニック
+  img.src = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif?" + Date.now();
+
   img.className = "floatingVideo";
+
+  // ⭐ 位置を固定（中央）
+  img.style.top = "50%";
+  img.style.left = "50%";
+  img.style.transform = "translate(-50%, -50%)";
+
+  // ⭐ 大きさを調整
+  img.style.width = "260px";   // ← 好きな大きさに変更OK
+  img.style.height = "auto";
 
   document.getElementById("gameArea").appendChild(img);
 
-  // 上に浮かびながら消える
-  let y = 200;
-  const anim = setInterval(()=>{
-    y -= 4;
-    img.style.top = y + "px";
-    if(y < -200){
-      clearInterval(anim);
-      img.remove();
-    }
-  }, 16);
+  // ⭐ GIF 再生終了を疑似的に 1秒後に消す（GIFの長さに合わせる）
+  setTimeout(() => {
+    img.remove();
+  }, 1000); // ← GIF の長さに合わせて変更
 }
+
 
 
   // 汎用表示切替
