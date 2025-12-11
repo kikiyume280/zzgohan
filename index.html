@@ -35,6 +35,22 @@ body:not(.home-active) #soundSettings {
 
 <h1 id="title">ユメ餌付け大作戦!  !</h1>
 
+
+<!-- ★ ホーム専用の説明文 ★ -->
+<div id="homeHowto" style="margin-top:20px; font-size:16px; line-height:1.6;">
+  <h3>【遊び方】</h3>
+  画面をクリックでスコアをアップ!!<br>
+  オムライス ⇒ 10ポイント<br>
+  オムライス（レア） ⇒ 1000ポイント (10%)<br>
+  ※やり直し等はサイトをリロード<br><br>
+
+  <h3>【ルール】</h3>
+  ツール、機械、キー割り当て変更などは使わないこと<br>
+  ※マウスクリック・キーボード・画面クリックのみ
+</div>
+
+
+  
 <!-- ホーム画面 -->
 <div id="home">
   <button onclick="startGame()">スタート</button>
@@ -248,6 +264,7 @@ function spawnVideo(){
 // もともとの show を window に登録
 window.show = function(id, bool){
   document.getElementById(id).style.display = bool ? "block" : "none";
+   toggleHowto(); // ← ★ これを追加！
 };
 
   window.goHome = function(){
@@ -349,6 +366,19 @@ window.addEventListener("click", () => {
     bgm.play().catch(()=>{});
   }
 }, { once:true });
+
+
+  <script>
+function toggleHowto(){
+  const home = document.getElementById("home");
+  const howto = document.getElementById("homeHowto");
+
+  if (home.style.display !== "none") {
+    howto.style.display = "block";   // ホームのときだけ表示
+  } else {
+    howto.style.display = "none";    // それ以外は消す
+  }
+}
 
 </script>
 </body>
