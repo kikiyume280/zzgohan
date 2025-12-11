@@ -156,15 +156,18 @@ const firebaseConfig = {
     show("ranking", true);
   }
 
-  // クリックで動画出現
-  document.getElementById("gameArea").addEventListener("click", () => {
-    if(timeLeft <= 0) return;
+document.getElementById("gameArea").addEventListener("click", () => {
+  if(timeLeft <= 0) return;
 
-    score += 10;
-    document.getElementById("score").textContent = score;
+  // ★クリック音
+  new Audio("https://raw.githubusercontent.com/kikiyume280/zzgohan/main/pon.mp3").play();
 
-    spawnVideo();
-  });
+  score += 10;
+  document.getElementById("score").textContent = score;
+
+  spawnVideo();
+});
+
 
 function spawnVideo(){
   const img = document.createElement("img");
