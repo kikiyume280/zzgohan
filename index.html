@@ -19,10 +19,15 @@
     }
     #rankingList { text-align:left; width:260px; margin:0 auto; }
 
-  /* ★追加：howto はホーム画面だけ表示★ */
-  #howto { display:none; }
-  #home #howto { display:block; }
-    
+ #howto {
+  display:block;
+}
+#game #howto,
+#result #howto,
+#ranking #howto {
+  display:none;
+}
+
   </style>
 </head>
 <body>
