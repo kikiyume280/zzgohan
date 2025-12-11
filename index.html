@@ -172,10 +172,9 @@ document.getElementById("gameArea").addEventListener("click", () => {
 function spawnVideo(){
   const img = document.createElement("img");
 
-  // ★ ランダム判定（10%でレア）
+  // 10%でレア
   const isRare = Math.random() < 0.10;
 
-  // ★ GIF を切り替え
   const normalGif = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif";
   const rareGif   = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food_rare.gif";
 
@@ -183,18 +182,18 @@ function spawnVideo(){
 
   img.className = "floatingVideo";
 
-  // 位置を固定（中央）
+  // 中央
   img.style.top = "50%";
   img.style.left = "50%";
   img.style.transform = "translate(-50%, -50%)";
 
-  // サイズ大きめ
-  img.style.width = isRare ? "300px" : "260px"; // レアなら少し大きく
+  // ★ 全GIFサイズ統一
+  img.style.width = "300px";  
   img.style.height = "auto";
 
   document.getElementById("gameArea").appendChild(img);
 
-  // ★ スコア加算（ここに移動）
+  // スコア加算
   if(isRare){
     score += 1000;
   } else {
@@ -202,12 +201,11 @@ function spawnVideo(){
   }
   document.getElementById("score").textContent = score;
 
-  // ⭐ GIF の表示時間コントロール（例：600ms）
+  // 一定時間で消す
   setTimeout(() => {
     img.remove();
-  }, isRare ? 700 : 600);  // レアは少し長く見せても良い
+  }, isRare ? 700 : 600);
 }
-
 
 
 
