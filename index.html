@@ -60,6 +60,18 @@
   ※マウスクリック・キーボード・画面クリックのみ
 </div>
 
+  <div id="soundSettings" style="margin-top:20px; text-align:center;">
+  <h3>🔊 サウンド設定</h3>
+  <div>
+    BGM 音量：
+    <input type="range" id="bgmVolume" min="0" max="1" step="0.01">
+  </div>
+  <div style="margin-top:10px;">
+    クリック音 音量：
+    <input type="range" id="seVolume" min="0" max="1" step="0.01">
+  </div>
+</div>
+
 
 <!-- ゲーム画面 -->
 <div id="game" style="display:none;">
@@ -265,6 +277,36 @@ bgm.volume = 0.5;
 // クリック音を音量可変にするため保存
 let clickSoundURL = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/pon.mp3";
 
+// ▼ クリック音オブジェクト
+let clickSound = new Audio(clickSoundURL);
+
+// ▼ 保存された音量（なければ0.5）
+const savedBgmVol = localStorage.getItem("bgmVolume") ?? 0.5;
+const savedSeVol  = localStorage.getItem("seVolume") ?? 0.5;
+
+// ▼ 初期音量セット
+bgm.volume = savedBgmVol;
+clickSound.volume = savedSeVol;
+
+// ▼ UI にも反映
+document.getElementById("bgmVolume").value = savedBgmVol;
+document.getElementById("seVolume").value  = savedSeVol;
+
+// ▼ BGM 音量変更
+document.getElementById("bgmVolume").addEventListener("input", e=>{
+  const v = e.target.value;
+  bgm.volume = v;
+  localStorage.setItem("bgmVolume", v);
+});
+
+// ▼ SE 音量変更
+document.getElementById("seVolume").addEventListener("input", e=>{
+  const v = e.target.value;
+  clickSound.volume = v;
+  localStorage.setItem("seVolume", v);
+});
+
+  
 function playClickSound(){
   let se = new Audio(clickSoundURL);
   se.volume = bgm.volume; // ★ 音量連動
