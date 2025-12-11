@@ -37,7 +37,7 @@ body:not(.home-active) #soundSettings {
 </head>
 <body>
 
-<h1 id="title">ユメ餌付け大作戦aa!  !</h1>
+<h1 id="title">ユメ餌付け大作戦aa　あ!  !</h1>
 
 <!-- ホーム画面 -->
 <div id="home">
@@ -314,11 +314,11 @@ function playClickSound(){
 const _oldShow = window.show;
 window.show = function(id, bool){
   _oldShow(id, bool);
-document.body.classList.toggle("home-active",
-  document.getElementById("home").style.display !== "none"
-);
 
   const homeVisible = document.getElementById("home").style.display !== "none";
+
+  // ★ これでホームのときだけ説明文と音量設定が表示される
+  document.body.classList.toggle("home-active", homeVisible);
 
   if(homeVisible){
     bgm.play().catch(()=>{});
@@ -327,6 +327,7 @@ document.body.classList.toggle("home-active",
     bgm.currentTime = 0;
   }
 }
+
 
 
 
