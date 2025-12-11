@@ -271,18 +271,23 @@ function playClickSound(){
   se.play();
 }
 
-// ★ 画面切り替え時にホームならBGM再生、他は停止
 const _oldShow = show;
 show = function(id, bool){
   _oldShow(id, bool);
 
-  if(id === "home" && bool){
-    bgm.play();
-  } else if(bool){
+  // 表示切り替え後の状態をチェック
+  const homeVisible = document.getElementById("home").style.display !== "none";
+
+  if(homeVisible){
+    // ホームなら再生
+    bgm.play().catch(()=>{});
+  } else {
+    // 他の画面なら停止
     bgm.pause();
     bgm.currentTime = 0;
   }
 }
+
 
 // ★ 音量スライダーUIをページ下に追加
 window.addEventListener("DOMContentLoaded", () => {
