@@ -166,25 +166,25 @@ const firebaseConfig = {
     spawnVideo();
   });
 
-  function spawnVideo(){
-    const video = document.createElement("video");
-    video.src = "https://github.com/kikiyume280/zzgohan/raw/main/food.gif";
-    video.autoplay = true;
-    video.className = "floatingVideo";
+ function spawnVideo(){
+  const img = document.createElement("img");
+  img.src = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif";
+  img.className = "floatingVideo";
 
-    document.getElementById("gameArea").appendChild(video);
+  document.getElementById("gameArea").appendChild(img);
 
-    // 上に浮かびながら消える
-    let y = 200;
-    const anim = setInterval(()=>{
-      y -= 4;
-      video.style.top = y + "px";
-      if(y < -200){
-        clearInterval(anim);
-        video.remove();
-      }
-    }, 16);
-  }
+  // 上に浮かびながら消える
+  let y = 200;
+  const anim = setInterval(()=>{
+    y -= 4;
+    img.style.top = y + "px";
+    if(y < -200){
+      clearInterval(anim);
+      img.remove();
+    }
+  }, 16);
+}
+
 
   // 汎用表示切替
   function show(id, bool){
