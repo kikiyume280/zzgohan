@@ -52,7 +52,7 @@
   <h3>【遊び方】</h3>
   画面をクリックでスコアをアップ!!<br>
   オムライス ⇒ 10ポイント<br>
-  オムライス（レア） ⇒ 1000ポイント (10%)<br><br>
+  オムライス（レア） ⇒ 1000ポイント (10%)<br>
   ※やり直し等はサイトをリロード<br><br>
 
   <h3>【ルール】</h3>
@@ -271,22 +271,20 @@ function playClickSound(){
   se.play();
 }
 
-const _oldShow = show;
-show = function(id, bool){
+const _oldShow = window.show;
+window.show = function(id, bool){
   _oldShow(id, bool);
 
-  // 表示切り替え後の状態をチェック
   const homeVisible = document.getElementById("home").style.display !== "none";
 
   if(homeVisible){
-    // ホームなら再生
     bgm.play().catch(()=>{});
   } else {
-    // 他の画面なら停止
     bgm.pause();
     bgm.currentTime = 0;
   }
 }
+
 
 
 // ★ 音量スライダーUIをページ下に追加
