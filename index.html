@@ -368,7 +368,9 @@ window.addEventListener("click", () => {
 }, { once:true });
 
 
-<!-- ★ toggleHowto() を入れる場所はここでOK！ -->
+</script> <!-- ★ ここで Firebase 〜 BGM までの大きな script は終了 -->
+
+<!-- ★ toggleHowto() を入れる場所（ここが正解の位置） -->
 <script>
 function toggleHowto(){
   const home = document.getElementById("home");
@@ -380,8 +382,8 @@ function toggleHowto(){
     howto.style.display = "none";    // それ以外は消す
   }
 }
-
-
 </script>
+
 </body>
 </html>
+
