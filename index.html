@@ -25,10 +25,9 @@
   display: block;
 }
 
-/* ★ ゲーム中・結果画面・ランキングでは非表示 */
-#game #howto,
-#result #howto,
-#ranking #howto {
+/* ★ ホーム以外では説明文と音量設定を非表示にする */
+body:not(.home-active) #howto,
+body:not(.home-active) #soundSettings {
   display: none;
 }
 
@@ -61,7 +60,7 @@
 </div>
 
   <div id="soundSettings" style="margin-top:20px; text-align:center;">
-  <h3>🔊 サウンド設定</h3>
+  <h3>BGM再生ボタン</h3>
   <div>
     BGM 音量：
     <input type="range" id="bgmVolume" min="0" max="1" step="0.01">
@@ -315,6 +314,9 @@ function playClickSound(){
 const _oldShow = window.show;
 window.show = function(id, bool){
   _oldShow(id, bool);
+document.body.classList.toggle("home-active",
+  document.getElementById("home").style.display !== "none"
+);
 
   const homeVisible = document.getElementById("home").style.display !== "none";
 
