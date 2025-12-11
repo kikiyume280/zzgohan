@@ -169,8 +169,14 @@ const firebaseConfig = {
 function spawnVideo(){
   const img = document.createElement("img");
 
-  // 毎回確実に最初から再生
-  img.src = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif?" + Date.now();
+  // ★ ランダム判定（10%でレア）
+  const isRare = Math.random() < 0.10;
+
+  // ★ GIF を切り替え
+  const normalGif = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food.gif";
+  const rareGif   = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/food_rare.gif";
+
+  img.src = (isRare ? rareGif : normalGif) + "?" + Date.now();
 
   img.className = "floatingVideo";
 
@@ -180,16 +186,25 @@ function spawnVideo(){
   img.style.transform = "translate(-50%, -50%)";
 
   // サイズ大きめ
-  img.style.width = "260px";
+  img.style.width = isRare ? "300px" : "260px"; // レアなら少し大きく
   img.style.height = "auto";
 
   document.getElementById("gameArea").appendChild(img);
 
-  // ⭐ GIF の表示時間を完全にコントロール（例：600ms）
+  // ★ スコア加算（ここに移動）
+  if(isRare){
+    score += 100;
+  } else {
+    score += 10;
+  }
+  document.getElementById("score").textContent = score;
+
+  // ⭐ GIF の表示時間コントロール（例：600ms）
   setTimeout(() => {
     img.remove();
-  }, 600); // ← ここをGIFより少し長めにすれば「最後のコマで固まる問題」消滅！
+  }, isRare ? 700 : 600);  // レアは少し長く見せても良い
 }
+
 
 
 
