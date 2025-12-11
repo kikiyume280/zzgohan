@@ -253,9 +253,10 @@ function spawnVideo(){
 
 
   // 汎用表示切替
-  function show(id, bool){
-    document.getElementById(id).style.display = bool ? "block" : "none";
-  }
+// もともとの show を window に登録
+window.show = function(id, bool){
+  document.getElementById(id).style.display = bool ? "block" : "none";
+};
 
   window.goHome = function(){
     show("result", false);
@@ -311,22 +312,26 @@ function playClickSound(){
   clickSound.play().catch(()=>{});
 }
 
+// ▼ オリジナル show を保存
 const _oldShow = window.show;
+
+// ▼ ホームだけ説明文とBGMを制御する show()
 window.show = function(id, bool){
   _oldShow(id, bool);
 
   const homeVisible = document.getElementById("home").style.display !== "none";
 
-  // ★ これでホームのときだけ説明文と音量設定が表示される
+  // ★ ホーム時のみ説明文と音量設定を表示
   document.body.classList.toggle("home-active", homeVisible);
 
+  // ★ ホーム時だけ BGM 再生
   if(homeVisible){
     bgm.play().catch(()=>{});
   } else {
     bgm.pause();
     bgm.currentTime = 0;
   }
-}
+};
 
 
 
