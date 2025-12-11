@@ -241,5 +241,61 @@ function spawnVideo(){
   }
 </script>
 
+
+
+<!-- ★ ホーム限定BGM + 音量設定 ★ -->
+<script>
+let bgm = playClickSound();
+
+bgm.loop = true;   // ループ再生
+bgm.volume = 0.5;  // 初期音量（0〜1）
+
+// クリック音を音量可変にするため保存
+let clickSoundURL = "https://raw.githubusercontent.com/kikiyume280/zzgohan/main/pon.mp3";
+
+function playClickSound(){
+  let se = new Audio(clickSoundURL);
+  se.volume = bgm.volume; // ★ 音量連動
+  se.play();
+}
+
+// ★ 画面切り替え時にホームならBGM再生、他は停止
+const _oldShow = show;
+show = function(id, bool){
+  _oldShow(id, bool);
+
+  if(id === "home" && bool){
+    bgm.play();
+  } else if(bool){
+    bgm.pause();
+    bgm.currentTime = 0;
+  }
+}
+
+// ★ 音量スライダーUIをページ下に追加
+window.addEventListener("DOMContentLoaded", () => {
+  const box = document.createElement("div");
+  box.style.marginTop = "20px";
+  box.innerHTML = `
+    <div style="margin-top:30px;">
+      <b>🔊 音量設定</b><br>
+      <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5" style="width:200px;">
+    </div>
+  `;
+  document.body.appendChild(box);
+
+  document.getElementById("volumeSlider").addEventListener("input", (e)=>{
+    bgm.volume = e.target.value;
+  });
+});
+</script>
+
+
+
+
+
+
+
+  
 </body>
 </html>
