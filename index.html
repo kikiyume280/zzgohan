@@ -27,7 +27,20 @@
 #ranking #howto {
   display:none;
 }
+/* ★ ホームのときだけ howto を表示する */
+#howto {
+  display: block;
+}
 
+/* ★ ゲーム中・結果画面・ランキングでは非表示 */
+#game #howto,
+#result #howto,
+#ranking #howto {
+  display: none;
+}
+
+
+    
   </style>
 </head>
 <body>
